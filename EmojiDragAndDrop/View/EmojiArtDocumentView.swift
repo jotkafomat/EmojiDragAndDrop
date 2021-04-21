@@ -31,19 +31,18 @@ struct EmojiArtDocumentView: View {
                             }
                         }
                     )
-                        .edgesIgnoringSafeArea([.horizontal, .bottom])
-                        .onDrop(of: ["public.image","public.text"], isTargeted: nil) { providers, location in
-                            // SwiftUI bug (as of 13.4)? the location is supposed to be in our coordinate system
-                            // however, the y coordinate appears to be in the global coordinate system
-                            var location = CGPoint(x: location.x, y: geometry.convert(location, from: .global).y)
-                            location = CGPoint(x: location.x - geometry.size.width/2, y: location.y - geometry.size.height/2)
-                            return self.drop(providers: providers, at: location)
-                        }
                     ForEach(document.emojis) { emoji in
                         Text(emoji.text)
                             .font(font(for: emoji))
                             .position(position(for: emoji, in: geometry.size))
                     }
+                }
+                .clipped()
+                .edgesIgnoringSafeArea([.horizontal, .bottom])
+                .onDrop(of: ["public.image","public.text"], isTargeted: nil) { providers, location in
+                    var location = CGPoint(x: location.x, y: geometry.convert(location, from: .global).y)
+                    location = CGPoint(x: location.x - geometry.size.width/2, y: location.y - geometry.size.height/2)
+                    return self.drop(providers: providers, at: location)
                 }
             }
         }
