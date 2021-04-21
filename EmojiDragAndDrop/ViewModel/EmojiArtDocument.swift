@@ -14,6 +14,7 @@ class EmojiArtDocument: ObservableObject
     @Published private var emojiArt: EmojiArt = EmojiArt() {
         didSet {
             print("json = \(emojiArt.json?.utf8 ?? "nil")")
+            UserDefaults.standard.set(emojiArt.json, forKey: "EmojiArtDocument.Untitled")
         }
     }
         
