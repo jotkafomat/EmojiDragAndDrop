@@ -15,6 +15,7 @@
 		E1DA2AF826302DA800CD650A /* EmojiArtDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DA2AF726302DA800CD650A /* EmojiArtDocument.swift */; };
 		E1DA2AFB26302DCE00CD650A /* EmojiArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DA2AFA26302DCE00CD650A /* EmojiArt.swift */; };
 		E1DA2AFE26302DEE00CD650A /* EmojiArtExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DA2AFD26302DEE00CD650A /* EmojiArtExtensions.swift */; };
+		E1DA2B0126308C6700CD650A /* OptionalImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DA2B0026308C6700CD650A /* OptionalImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		E1DA2AF726302DA800CD650A /* EmojiArtDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiArtDocument.swift; sourceTree = "<group>"; };
 		E1DA2AFA26302DCE00CD650A /* EmojiArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiArt.swift; sourceTree = "<group>"; };
 		E1DA2AFD26302DEE00CD650A /* EmojiArtExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiArtExtensions.swift; sourceTree = "<group>"; };
+		E1DA2B0026308C6700CD650A /* OptionalImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				E1DA2AF326302D6600CD650A /* EmojiArtDocumentView.swift */,
+				E1DA2B0026308C6700CD650A /* OptionalImage.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -179,6 +182,7 @@
 				E1DA2AFE26302DEE00CD650A /* EmojiArtExtensions.swift in Sources */,
 				E1DA2AFB26302DCE00CD650A /* EmojiArt.swift in Sources */,
 				E1DA2AF426302D6600CD650A /* EmojiArtDocumentView.swift in Sources */,
+				E1DA2B0126308C6700CD650A /* OptionalImage.swift in Sources */,
 				E1DA2AF826302DA800CD650A /* EmojiArtDocument.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
