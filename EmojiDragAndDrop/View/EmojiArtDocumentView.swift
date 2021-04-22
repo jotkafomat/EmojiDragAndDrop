@@ -38,6 +38,7 @@ struct EmojiArtDocumentView: View {
                     }
                 }
                 .clipped()
+                .gesture(zoomGesture())
                 .edgesIgnoringSafeArea([.horizontal, .bottom])
                 .onDrop(of: ["public.image","public.text"], isTargeted: nil) { providers, location in
                     var location = CGPoint(x: location.x, y: geometry.convert(location, from: .global).y)
@@ -49,13 +50,15 @@ struct EmojiArtDocumentView: View {
         }
     }
     //    DoubleTap Gesture
-    @State var zoomScale: CGFloat = 1.0
+    private var zoomScale: CGFloat {
+        steadyStatezoomScale * gestureZoomScale
+    }
     
     private func zoomToFit(_ image: UIImage?, size: CGSize) {
         if let image = image, image.size.width > 0, image.size.height > 0 {
             let hZoom = size.width / image.size.width
             let vZoom = size.height / image.size.height
-            zoomScale = min(hZoom, vZoom)
+            steadyStatezoomScale = min(hZoom, vZoom)
         }
     }
     
@@ -65,6 +68,20 @@ struct EmojiArtDocumentView: View {
                 withAnimation {
                     zoomToFit(document.backgroundImage, size: size)
                 }
+            }
+    }
+    
+//    Pinch Gesture
+    @State var steadyStatezoomScale: CGFloat = 1.0
+    @GestureState var gestureZoomScale: CGFloat = 1.0
+    
+    func zoomGesture() -> some Gesture {
+        MagnificationGesture()
+            .updating($gestureZoomScale) { latestGestureState, gestureZoomScale, transaction in
+                  gestureZoomScale = latestGestureState
+            }
+            .onEnded { finalGestureScale in
+                steadyStatezoomScale *= finalGestureScale
             }
     }
     
