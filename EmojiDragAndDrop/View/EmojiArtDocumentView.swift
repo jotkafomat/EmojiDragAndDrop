@@ -39,6 +39,9 @@ struct EmojiArtDocumentView: View {
                             .background(selectedEmoji.contains(emoji) ? Color(.magenta): Color(.clear))
                             .font(animatableWithSize: emoji.fontSize * zoomScale)
                             .position(position(for: emoji, in: geometry.size))
+                            .onTapGesture(count: 3) {
+                                document.remove(emoji)
+                            }
                             .onLongPressGesture(minimumDuration: 1) {
                                 if selectedEmoji.contains(emoji) {
                                     selectedEmoji.remove(emoji)
