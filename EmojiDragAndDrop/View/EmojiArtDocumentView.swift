@@ -39,6 +39,7 @@ struct EmojiArtDocumentView: View {
                             .background(selectedEmoji.contains(emoji) ? Color(.magenta): Color(.clear))
                             .font(animatableWithSize: emoji.fontSize * zoomScale)
                             .position(position(for: emoji, in: geometry.size))
+                            .scaleEffect(selectedEmoji.contains(emoji) ? gestureZoomScale : 1)
                             .onTapGesture(count: 3) {
                                 document.remove(emoji)
                             }
@@ -68,7 +69,11 @@ struct EmojiArtDocumentView: View {
     }
     //    DoubleTap Gesture
     private var zoomScale: CGFloat {
-        steadyStatezoomScale * gestureZoomScale
+        if selectedEmoji.isEmpty {
+            return steadyStatezoomScale * gestureZoomScale
+        } else {
+            return steadyStatezoomScale
+        }
     }
     
     private func zoomToFit(_ image: UIImage?, size: CGSize) {
@@ -96,10 +101,20 @@ struct EmojiArtDocumentView: View {
     func zoomGesture() -> some Gesture {
         MagnificationGesture()
             .updating($gestureZoomScale) { latestGestureState, gestureZoomScale, transaction in
-                gestureZoomScale = latestGestureState
+                if selectedEmoji.isEmpty {
+                    gestureZoomScale = latestGestureState
+                } else {
+                    gestureZoomScale = latestGestureState / zoomScale
+                }
             }
             .onEnded { finalGestureScale in
-                steadyStatezoomScale *= finalGestureScale
+                if selectedEmoji.isEmpty {
+                    steadyStatezoomScale *= finalGestureScale
+                } else {
+                    selectedEmoji.forEach {
+                        document.scaleEmoji($0, by: (finalGestureScale / zoomScale))
+                    }
+                }
             }
     }
     
@@ -121,16 +136,19 @@ struct EmojiArtDocumentView: View {
             }
     }
     
-    
-    
-    
     private func font(for emoji: EmojiArt.Emoji) -> Font {
         Font.system(size: emoji.fontSize * zoomScale)
     }
     
     private func position(for emoji: EmojiArt.Emoji, in size: CGSize) -> CGPoint {
         var location = emoji.location
-        location = CGPoint(x: location.x * zoomScale, y: location.y * zoomScale)
+        if selectedEmoji.contains(emoji) {
+            location = CGPoint(
+                x: location.x * zoomScale / gestureZoomScale,
+                y: location.y * zoomScale / gestureZoomScale)
+        } else {
+            location = CGPoint(x: location.x * zoomScale, y: location.y * zoomScale)
+        }
         location = CGPoint(x: location.x + size.width/2, y: location.y + size.height/2)
         location = CGPoint(x: location.x + panOffset.width, y: location.y + panOffset.height)
         return location
@@ -149,13 +167,4 @@ struct EmojiArtDocumentView: View {
     }
     
     private let defaultEmojiSize: CGFloat = 40
-}
-extension Set {
-    mutating func toggleMatching(_ emoji: Element) {
-        if self.contains(emoji) {
-            self.remove(emoji)
-        } else {
-            self.insert(emoji)
-        }
-    }
 }
