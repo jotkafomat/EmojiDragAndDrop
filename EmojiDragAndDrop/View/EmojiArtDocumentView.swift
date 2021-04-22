@@ -10,6 +10,8 @@ import SwiftUI
 struct EmojiArtDocumentView: View {
     @ObservedObject var document: EmojiArtDocument
     
+    @State private var selectedEmoji = Set<EmojiArt.Emoji>()
+    
     
     var body: some View {
         VStack {
@@ -34,8 +36,17 @@ struct EmojiArtDocumentView: View {
                     
                     ForEach(document.emojis) { emoji in
                         Text(emoji.text)
+                            .background(selectedEmoji.contains(emoji) ? Color(.magenta): Color(.clear))
                             .font(animatableWithSize: emoji.fontSize * zoomScale)
                             .position(position(for: emoji, in: geometry.size))
+                            .onLongPressGesture(minimumDuration: 1) {
+                                if selectedEmoji.contains(emoji) {
+                                    selectedEmoji.remove(emoji)
+                                } else {
+                                    selectedEmoji.insert(emoji)
+                                }
+                                print(selectedEmoji)
+                            }
                     }
                 }
                 .clipped()
@@ -48,6 +59,10 @@ struct EmojiArtDocumentView: View {
                     location = CGPoint(x: location.x - panOffset.width, y: location.y - panOffset.height)
                     location = CGPoint(x: location.x / zoomScale, y: location.y / zoomScale)
                     return self.drop(providers: providers, at: location)
+                }
+                .onTapGesture {
+                    selectedEmoji.removeAll()
+                    print(selectedEmoji)
                 }
             }
         }
@@ -75,21 +90,21 @@ struct EmojiArtDocumentView: View {
             }
     }
     
-//    Pinch Gesture
+    //    Pinch Gesture
     @State var steadyStatezoomScale: CGFloat = 1.0
     @GestureState var gestureZoomScale: CGFloat = 1.0
     
     func zoomGesture() -> some Gesture {
         MagnificationGesture()
             .updating($gestureZoomScale) { latestGestureState, gestureZoomScale, transaction in
-                  gestureZoomScale = latestGestureState
+                gestureZoomScale = latestGestureState
             }
             .onEnded { finalGestureScale in
                 steadyStatezoomScale *= finalGestureScale
             }
     }
     
-//    Pan Gesture
+    //    Pan Gesture
     @State private var steadyStatePanOffset: CGSize = .zero
     @GestureState private var gesturePanOffset: CGSize = .zero
     
