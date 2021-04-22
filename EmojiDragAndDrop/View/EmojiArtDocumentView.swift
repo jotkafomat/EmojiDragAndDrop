@@ -43,11 +43,7 @@ struct EmojiArtDocumentView: View {
                                 document.remove(emoji)
                             }
                             .onLongPressGesture(minimumDuration: 1) {
-                                if selectedEmoji.contains(emoji) {
-                                    selectedEmoji.remove(emoji)
-                                } else {
-                                    selectedEmoji.insert(emoji)
-                                }
+                                selectedEmoji.toggleMatching(emoji)
                                 print(selectedEmoji)
                             }
                     }
@@ -153,4 +149,13 @@ struct EmojiArtDocumentView: View {
     }
     
     private let defaultEmojiSize: CGFloat = 40
+}
+extension Set {
+    mutating func toggleMatching(_ emoji: Element) {
+        if self.contains(emoji) {
+            self.remove(emoji)
+        } else {
+            self.insert(emoji)
+        }
+    }
 }
