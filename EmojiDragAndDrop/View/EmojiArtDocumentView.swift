@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct EmojiArtDocumentView: View {
     @ObservedObject var document: EmojiArtDocument
@@ -62,6 +63,9 @@ struct EmojiArtDocumentView: View {
                 .gesture(panGesture())
                 .gesture(zoomGesture())
                 .edgesIgnoringSafeArea([.horizontal, .bottom])
+                .onReceive(document.$backgroundImage) { backgroundImage in
+                    zoomToFit(backgroundImage, size: geometry.size)
+                }
                 .onDrop(of: ["public.image","public.text"], isTargeted: nil) { providers, location in
                     var location = CGPoint(x: location.x, y: geometry.convert(location, from: .global).y)
                     location = CGPoint(x: location.x - geometry.size.width/2, y: location.y - geometry.size.height/2)
