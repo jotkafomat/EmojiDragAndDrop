@@ -33,22 +33,29 @@ struct EmojiArtDocumentView: View {
                             .offset(panOffset)
                     )
                     .gesture(doubleTabToZoom(in: geometry.size))
-                    
-                    ForEach(document.emojis) { emoji in
-                        Text(emoji.text)
-                            .background(selectedEmoji.containsEmoji(emoji) ? Color(.magenta): Color(.clear))
-                            .font(animatableWithSize: emoji.fontSize * zoomScale)
-                            .position(position(for: emoji, in: geometry.size))
-                            .offset(selectedEmoji.containsEmoji(emoji) ? emojiDragOffset : .zero)
-                            .scaleEffect(selectedEmoji.containsEmoji(emoji) ? gestureZoomScale : 1)
-                            .gesture(emojiDragGesture())
-                            .onTapGesture(count: 3) {
-                                document.remove(emoji)
-                            }
-                            .onLongPressGesture {
-                                selectedEmoji.toggleMatching(emoji)
-                                print(selectedEmoji)
-                            }
+                    if isLoading {
+                        VStack {
+                            Image(systemName: "timer").imageScale(.large)
+                                .spinning()
+                            Text("Image is loading .....")
+                        }
+                    } else {
+                        ForEach(document.emojis) { emoji in
+                            Text(emoji.text)
+                                .background(selectedEmoji.containsEmoji(emoji) ? Color(.magenta): Color(.clear))
+                                .font(animatableWithSize: emoji.fontSize * zoomScale)
+                                .position(position(for: emoji, in: geometry.size))
+                                .offset(selectedEmoji.containsEmoji(emoji) ? emojiDragOffset : .zero)
+                                .scaleEffect(selectedEmoji.containsEmoji(emoji) ? gestureZoomScale : 1)
+                                .gesture(emojiDragGesture())
+                                .onTapGesture(count: 3) {
+                                    document.remove(emoji)
+                                }
+                                .onLongPressGesture {
+                                    selectedEmoji.toggleMatching(emoji)
+                                    print(selectedEmoji)
+                                }
+                        }
                     }
                 }
                 .clipped()
@@ -180,7 +187,7 @@ struct EmojiArtDocumentView: View {
     
     private func drop(providers: [NSItemProvider], at location: CGPoint) -> Bool {
         var found = providers.loadFirstObject(ofType: URL.self) { url in
-            self.document.setBackgroundURL(url)
+            self.document.backgroundURL = url
         }
         if !found {
             found = providers.loadObjects(ofType: String.self) { string in
@@ -188,6 +195,10 @@ struct EmojiArtDocumentView: View {
             }
         }
         return found
+    }
+    
+    var isLoading: Bool {
+        document.backgroundURL != nil && document.backgroundImage == nil 
     }
     
     private let defaultEmojiSize: CGFloat = 40
