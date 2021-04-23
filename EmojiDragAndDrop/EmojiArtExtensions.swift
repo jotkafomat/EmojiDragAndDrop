@@ -210,12 +210,17 @@ extension UIImage {
     }
 }
 
-extension Set {
-    mutating func toggleMatching(_ element: Element) {
-        if contains(element) {
-            remove(element)
+extension Set where Element == EmojiArt.Emoji  {
+    
+    func containsEmoji(_ emoji: EmojiArt.Emoji) -> Bool {
+        contains(where: { $0.id == emoji.id })
+    }
+    
+    mutating func toggleMatching(_ emoji: EmojiArt.Emoji) {
+        if containsEmoji(emoji) {
+            remove(emoji)
         } else {
-            insert(element)
+            insert(emoji)
         }
     }
 }

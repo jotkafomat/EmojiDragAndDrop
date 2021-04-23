@@ -36,14 +36,16 @@ struct EmojiArtDocumentView: View {
                     
                     ForEach(document.emojis) { emoji in
                         Text(emoji.text)
-                            .background(selectedEmoji.contains(emoji) ? Color(.magenta): Color(.clear))
+                            .background(selectedEmoji.containsEmoji(emoji) ? Color(.magenta): Color(.clear))
                             .font(animatableWithSize: emoji.fontSize * zoomScale)
                             .position(position(for: emoji, in: geometry.size))
-                            .scaleEffect(selectedEmoji.contains(emoji) ? gestureZoomScale : 1)
+                            .offset(selectedEmoji.containsEmoji(emoji) ? emojiDragOffset : .zero)
+                            .scaleEffect(selectedEmoji.containsEmoji(emoji) ? gestureZoomScale : 1)
+                            .gesture(emojiDragGesture())
                             .onTapGesture(count: 3) {
                                 document.remove(emoji)
                             }
-                            .onLongPressGesture(minimumDuration: 1) {
+                            .onLongPressGesture {
                                 selectedEmoji.toggleMatching(emoji)
                                 print(selectedEmoji)
                             }
@@ -136,13 +138,35 @@ struct EmojiArtDocumentView: View {
             }
     }
     
+    //DragGestureEmoji
+    
+    @State private var emojiStateDragOffset: CGSize = .zero
+    @GestureState private var gestureDragOffset: CGSize = .zero
+    
+    var emojiDragOffset: CGSize {
+        (emojiStateDragOffset + gestureDragOffset) * zoomScale
+    }
+    
+    private func emojiDragGesture() -> some Gesture {
+        DragGesture()
+            .updating($gestureDragOffset) { latestGestureValue, gestureDragOffset, transaction in
+                gestureDragOffset = latestGestureValue.translation / zoomScale
+                
+            }
+            .onEnded { finalDragGestureValue in
+                selectedEmoji.forEach { emoji in
+                    document.moveEmoji(emoji, by: finalDragGestureValue.translation / zoomScale)
+                }
+            }
+    }
+    
     private func font(for emoji: EmojiArt.Emoji) -> Font {
         Font.system(size: emoji.fontSize * zoomScale)
     }
     
     private func position(for emoji: EmojiArt.Emoji, in size: CGSize) -> CGPoint {
         var location = emoji.location
-        if selectedEmoji.contains(emoji) {
+        if selectedEmoji.containsEmoji(emoji) {
             location = CGPoint(
                 x: location.x * zoomScale / gestureZoomScale,
                 y: location.y * zoomScale / gestureZoomScale)
