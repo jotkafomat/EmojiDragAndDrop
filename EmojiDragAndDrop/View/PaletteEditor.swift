@@ -10,7 +10,8 @@ import SwiftUI
 struct PaletteEditor: View {
     
     @EnvironmentObject var document: EmojiArtDocument
-    @Binding var choosenPallete: String
+    @Binding var choosenPalette: String
+    @State private var paletteName: String = ""
     
     var body: some View {
         VStack(spacing: 0) {
@@ -18,9 +19,17 @@ struct PaletteEditor: View {
                 .font(.headline)
                 .padding()
             Divider()
-            Text(document.paletteNames[choosenPallete] ?? "")
+            TextField("Palette Name", text: $paletteName, onEditingChanged: { editingStatus in
+                if !editingStatus {
+                    document.renamePalette(choosenPalette, to: paletteName)
+                }
+                
+            })
                 .padding()
             Spacer()
+        }
+        .onAppear {
+            paletteName = document.paletteNames[choosenPalette] ?? ""
         }
     }
 }
