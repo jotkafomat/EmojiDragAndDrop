@@ -39,6 +39,14 @@ struct PaletteEditor: View {
                         }
                     })
                 }
+                Section(header: Text("Remove Emoji")) {
+                    ForEach(choosenPalette.map { String($0)}, id: \.self) { emoji in
+                        Text(emoji)
+                            .onTapGesture {
+                                choosenPalette = document.removeEmoji(emoji, fromPalette: choosenPalette)
+                            }
+                    }
+                }
             }
         }
         .onAppear {
