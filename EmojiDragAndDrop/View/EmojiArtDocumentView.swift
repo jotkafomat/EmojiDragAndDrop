@@ -86,8 +86,7 @@ struct EmojiArtDocumentView: View {
                     print(selectedEmoji)
                 }
                 .navigationBarItems(trailing: Button(action: {
-                    if let url = UIPasteboard.general.url {
-                        document.backgroundURL = url
+                    if let url = UIPasteboard.general.url, url != self.document.backgroundURL {
                         confirmBackgroundPaste = true
                     } else {
                         explainBackgroundPaste = true
@@ -103,14 +102,15 @@ struct EmojiArtDocumentView: View {
                         }
                 }))
             }
-            .alert(isPresented: $confirmBackgroundPaste) {
-                Alert(title: Text("Paste Background"),
-                      message: Text("Replace your background with \(UIPasteboard.general.url?.absoluteString ?? "nithing")"),
-                      primaryButton: .default(Text("OK")) {
-                        document.backgroundURL = UIPasteboard.general.url },
-                      secondaryButton: .cancel())
-            }
-
+            .zIndex(-1)
+        }
+        .alert(isPresented: $confirmBackgroundPaste) {
+            Alert(title: Text("Paste Background"),
+                  message: Text("Replace your background with \(UIPasteboard.general.url?.absoluteString ?? "nithing")"),
+                  primaryButton: .default(Text("OK")) {
+                    document.backgroundURL = UIPasteboard.general.url },
+                  secondaryButton: .cancel())
+            
         }
     }
     //    DoubleTap Gesture
