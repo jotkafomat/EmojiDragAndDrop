@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PaletteEditor: View {
+    
+    @EnvironmentObject var document: EmojiArtDocument
     @Binding var choosenPallete: String
     
     var body: some View {
@@ -16,7 +18,7 @@ struct PaletteEditor: View {
                 .font(.headline)
                 .padding()
             Divider()
-            Text(choosenPallete)
+            Text(document.paletteNames[choosenPallete] ?? "")
                 .padding()
             Spacer()
         }
