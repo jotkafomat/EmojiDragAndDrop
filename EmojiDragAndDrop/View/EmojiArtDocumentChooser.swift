@@ -21,7 +21,14 @@ struct EmojiArtDocumentChooser: View {
                     }
                 }
             }
+            .listStyle(PlainListStyle())
             .navigationBarTitle(store.name)
+            .navigationBarItems(leading: Button(action: {
+                store.addDocument()
+            }, label: {
+                Image(systemName: "plus")
+                    .imageScale(.large)
+            }))
         }
     }
 }
