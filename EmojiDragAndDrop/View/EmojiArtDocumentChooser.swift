@@ -14,11 +14,14 @@ struct EmojiArtDocumentChooser: View {
         NavigationView {
             List {
                 ForEach(store.documents) { document in
-                    NavigationLink(destination: EmojiArtDocumentView(document: document)) {
+                    NavigationLink(
+                        destination: EmojiArtDocumentView(document: document)
+                            .navigationBarTitle(store.name(for: document))) {
                         Text(store.name(for: document))
                     }
                 }
             }
+            .navigationBarTitle(store.name)
         }
     }
 }
