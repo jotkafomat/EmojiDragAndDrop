@@ -20,6 +20,11 @@ struct EmojiArtDocumentChooser: View {
                         Text(store.name(for: document))
                     }
                 }
+                .onDelete(perform: { indexSet in
+                    indexSet.map { store.documents[$0] }.forEach { (document) in
+                        store.removeDocument(document)
+                    }
+                })
             }
             .listStyle(PlainListStyle())
             .navigationBarTitle(store.name)
