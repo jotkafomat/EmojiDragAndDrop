@@ -12,7 +12,7 @@ struct PaletteEditor: View {
     @EnvironmentObject var document: EmojiArtDocument
     @Binding var choosenPalette: String
     
-//    Editing states
+    //    Editing states
     @State private var paletteName: String = ""
     @State private var emojisToAdd: String = ""
     
@@ -22,21 +22,24 @@ struct PaletteEditor: View {
                 .font(.headline)
                 .padding()
             Divider()
-            TextField("Palette Name", text: $paletteName, onEditingChanged: { editingStatus in
-                if !editingStatus {
-                    document.renamePalette(choosenPalette, to: paletteName)
+            Form {
+                Section(header: Text("Palette Name")) {
+                    TextField("Palette Name", text: $paletteName, onEditingChanged: { editingStatus in
+                        if !editingStatus {
+                            document.renamePalette(choosenPalette, to: paletteName)
+                        }
+                        
+                    })
                 }
-                
-            })
-            TextField("Add Emoji", text: $emojisToAdd, onEditingChanged: { editingStatus in
-                if !editingStatus {
-                    choosenPalette = document.addEmoji(emojisToAdd, toPalette: choosenPalette)
-                    emojisToAdd = ""
+                Section(header: Text("Add Emoji")) {
+                    TextField("Add Emoji", text: $emojisToAdd, onEditingChanged: { editingStatus in
+                        if !editingStatus {
+                            choosenPalette = document.addEmoji(emojisToAdd, toPalette: choosenPalette)
+                            emojisToAdd = ""
+                        }
+                    })
                 }
-                
-            })
-                .padding()
-            Spacer()
+            }
         }
         .onAppear {
             paletteName = document.paletteNames[choosenPalette] ?? ""
