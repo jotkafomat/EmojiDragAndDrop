@@ -26,10 +26,10 @@ class EmojiArtDocument: ObservableObject, Hashable, Identifiable
     static func == (lhs: EmojiArtDocument, rhs: EmojiArtDocument) -> Bool {
         lhs.id == rhs.id
     }
-        
+//    using id as key for saving to user defaults
     init(id: UUID? = nil) {
         self.id = id ?? UUID()
-        let defaultKey = "EmojiArtDocument.\(self.id.uuidString)"
+        let defaultKey = "EmojiArtDocument.\(self.id.uuidString)" // key using id
         emojiArt = EmojiArt(json: UserDefaults.standard.data(forKey: defaultKey)) ?? EmojiArt()
         autosaveCancellable = $emojiArt.sink(receiveValue: { emojiArt in
             UserDefaults.standard.set(emojiArt.json, forKey: defaultKey )
