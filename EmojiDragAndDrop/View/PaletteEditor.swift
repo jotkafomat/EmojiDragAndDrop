@@ -16,6 +16,12 @@ struct PaletteEditor: View {
     @State private var paletteName: String = ""
     @State private var emojisToAdd: String = ""
     
+    var height: CGFloat {
+        CGFloat((choosenPalette.count - 1) / 6) * 70 + 70
+    }
+    
+    let fontSize: CGFloat = 40
+    
     var body: some View {
         VStack(spacing: 0) {
             Text("Palette Editor")
@@ -40,12 +46,14 @@ struct PaletteEditor: View {
                     })
                 }
                 Section(header: Text("Remove Emoji")) {
-                    ForEach(choosenPalette.map { String($0)}, id: \.self) { emoji in
+                    GridView(choosenPalette.map { String($0)}, id: \.self) { emoji in
                         Text(emoji)
+                            .font(Font.system(size: fontSize))
                             .onTapGesture {
                                 choosenPalette = document.removeEmoji(emoji, fromPalette: choosenPalette)
                             }
                     }
+                    .frame(height: height)
                 }
             }
         }
