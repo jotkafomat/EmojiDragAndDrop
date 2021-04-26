@@ -33,7 +33,7 @@ struct EmojiArtDocumentChooser: View {
             }, label: {
                 Image(systemName: "plus")
                     .imageScale(.large)
-            }))
+            }), trailing: EditButton())
         }
     }
 }
