@@ -8,19 +8,31 @@
 import SwiftUI
 import Combine
 
-class EmojiArtDocument: ObservableObject
+class EmojiArtDocument: ObservableObject, Hashable, Identifiable
 {
     static let palette: String = "🐶🐸🦒🦜🦁"
     
     @Published private var emojiArt: EmojiArt
     private var autosaveCancellable: AnyCancellable?
     
-    private static let untitled = "EmojiArtDocument.Untitled"
     
-    init() {
-        emojiArt = EmojiArt(json: UserDefaults.standard.data(forKey: EmojiArtDocument.untitled)) ?? EmojiArt()
+    //make it Hashable
+    let id: UUID
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: EmojiArtDocument, rhs: EmojiArtDocument) -> Bool {
+        lhs.id == rhs.id
+    }
+        
+    init(id: UUID? = nil) {
+        self.id = id ?? UUID()
+        let defaultKey = "EmojiArtDocument.\(self.id.uuidString)"
+        emojiArt = EmojiArt(json: UserDefaults.standard.data(forKey: defaultKey)) ?? EmojiArt()
         autosaveCancellable = $emojiArt.sink(receiveValue: { emojiArt in
-            UserDefaults.standard.set(emojiArt.json, forKey: EmojiArtDocument.untitled )
+            UserDefaults.standard.set(emojiArt.json, forKey: defaultKey )
         })
         fetchBackgroundImageData()
     }
