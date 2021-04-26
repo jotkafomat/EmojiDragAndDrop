@@ -13,6 +13,8 @@ struct EmojiArtDocumentView: View {
     
     @State private var selectedEmoji = Set<EmojiArt.Emoji>()
     @State private var chosenPalette = ""
+    @State private var explainBackgroundPaste = false
+    @State private var confirmBackgroundPaste = false
     
     
     var body: some View {
@@ -86,12 +88,29 @@ struct EmojiArtDocumentView: View {
                 .navigationBarItems(trailing: Button(action: {
                     if let url = UIPasteboard.general.url {
                         document.backgroundURL = url
+                        confirmBackgroundPaste = true
+                    } else {
+                        explainBackgroundPaste = true
                     }
                 }, label: {
                     Image(systemName: "doc.on.clipboard")
                         .imageScale(.large)
+                        .alert(isPresented: $explainBackgroundPaste) {
+                            return Alert(
+                                title: Text("Paste Background"),
+                                message: Text("Copy URL of an image and touch this button to make it the background your document"),
+                                dismissButton: .default(Text("OK")))
+                        }
                 }))
             }
+            .alert(isPresented: $confirmBackgroundPaste) {
+                Alert(title: Text("Paste Background"),
+                      message: Text("Replace your background with \(UIPasteboard.general.url?.absoluteString ?? "nithing")"),
+                      primaryButton: .default(Text("OK")) {
+                        document.backgroundURL = UIPasteboard.general.url },
+                      secondaryButton: .cancel())
+            }
+
         }
     }
     //    DoubleTap Gesture
