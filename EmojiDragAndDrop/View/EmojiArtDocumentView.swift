@@ -83,6 +83,14 @@ struct EmojiArtDocumentView: View {
                     selectedEmoji.removeAll()
                     print(selectedEmoji)
                 }
+                .navigationBarItems(trailing: Button(action: {
+                    if let url = UIPasteboard.general.url {
+                        document.backgroundURL = url
+                    }
+                }, label: {
+                    Image(systemName: "doc.on.clipboard")
+                        .imageScale(.large)
+                }))
             }
         }
     }
