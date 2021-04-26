@@ -30,7 +30,7 @@ struct PaletteChooser: View {
                         showPaletteEditor = true
                     }
                     .popover(isPresented: $showPaletteEditor, content: {
-                        PaletteEditor(choosenPalette: $chosenPalette)
+                        PaletteEditor(choosenPalette: $chosenPalette, isShowing: $showPaletteEditor)
                             .environmentObject(document)
                             .frame(width: 300, height: 300)
                     })
